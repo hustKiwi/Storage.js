@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>storage.js demo</title>
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.14.1/build/cssreset/cssreset-min.css">
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/json2/20130526/json2.min.js"></script>
+    <script src="storage.js"></script>
+    <style>
+    body {
+        padding: 25px;
+        font: 14px Helvetica,Arial,sans-serif;
+        line-height: 1.5;
+    }
+    h1 {
+        font-size: 36px;
+        font-weight: bold;
+        padding-bottom: 10px;
+    }
+    .mod {
+        margin-bottom: 25px;
+    }
+    .mod input {
+        margin: 5px 0;
+        padding: 3px 5px;
+    }
+    .mod em {
+        font-weight: bold;
+        font-style: normal;
+    }
+    </style>
+</head>
+<body>
+    <h1>storage.js demo</h1>
+
+    <div class="set-mod mod">
+        <div class="hd">
+            <em>set(key, value, expires)</em>：存储键值对，需指定key和对应的value。expires为可选参数（单位毫秒），用于控制set成功后的自动过期时间。
+        </div>
+        <div class="bd">
+            <input type="text" name="key" placeholder="需保存key值"><br>
+            <input type="text" name="value" placeholder="对应的value值"><br>
+            <input type="text" name="expires" placeholder="过期时间（可选）"><br>
+            <input type="button" value="确定">
+        </div>
+    </div>
+
+    <div class="get-mod mod">
+        <div class="hd">
+            <em>get(key)</em>：获取storage中保存的key对应的value。
+        </div>
+        <div class="bd">
+            <input type="text" name="key" placeholder="需读取的key值"><br>
+            对应的值是: <span class="value"></span><br>
+            <input type="button" value="确定">
+        </div>
+    </div>
+
+    <div class="remove-mod mod">
+        <div class="hd">
+            <em>remove(key, value)</em>：移除storage中对应key的存储。若原存储值为数组, 则可通过value来指定需移除的数组元素。
+        </div>
+        <div class="bd">
+            <input type="text" name="key" placeholder="对应的key值"><br>
+            <input type="text" name="value" placeholder="对应的value值（可选）"><br>
+            <input type="button" value="确定">
+        </div>
+    </div>
+
+    <div class="add-mod mod">
+        <div class="hd">
+            <em>add(key, value, options)</em>：把指定key对应的storage看作一个数组，往其中添加value。可选参数options有两个选项:  type 规定该储值数组的类型（默认是没有特别约束的list, 也可设为其中规范数组对象不重复的set类型）； limit 指代储值数组的最大容量（默认size为10）。
+        </div>
+        <div class="bd">
+            <input type="text" name="key" placeholder="对应的key值"><br>
+            <input type="text" name="value" placeholder="对应的value值"><br>
+            <input type="text" name="value" placeholder="options参数（可选）"><br>
+            <input type="button" value="确定">
+        </div>
+    </div>
+
+    <script>
+    $(function() {
+        var $set = $('.set-mod');
+        $set.find('input[type="button"]').click(function() {
+            var k = $set.find('input[name="key"]').val(),
+                v = $set.find('input[name="value"]').val(),
+                expires = $set.find('input[name="expires"]').val() || undefined;
+
+            if (k && v) {
+                storage.set(k, v, expires);
+                alert('存储成功');
+            }
+        });
+
+        var $get = $('.get-mod');
+        $get.find('input[type="button"]').click(function() {
+            var k = $get.find('input[name="key"]').val();
+            $get.find('.value').text(storage.get(k) || '');
+        });
+
+        var $remove = $('.remove-mod');
+        $remove.find('input[type="button"]').click(function() {
+            var k = $remove.find('input[name="key"]').val(),
+                v = $remove.find('input[name="value"]').val();
+            if (k) {
+                storage.remove(k, v);
+                alert('删除成功');
+            }
+        });
+
+        var $add = $('.add-mod');
+        $add.find('input[type="button"]').click(function() {
+            var k = $add.find('input[name="key"]').val(),
+                v = $add.find('input[name="value"]').val(),
+                options = $add.find('input[name="options"]').val();
+            if (k && v) {
+                storage.add(k, v, options);
+                alert('添加成功');
+            }
+        });
+    });
+    </script>
+</body>
+</html>
